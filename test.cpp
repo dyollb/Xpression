@@ -35,6 +35,16 @@ struct AnyOf
         return std::any_of(ents.begin(), ents.end(), [](Element * e) { return (dynamic_cast<T *>(e) != nullptr); });
     }
 
+    bool Explain(const std::vector<Element *> & ents, std::string & reason) const
+    {
+        if (!Evaluate(ents))
+        {
+            reason = "at least one " + m_TypeName + " is required";
+            return false;
+        }
+        return true;
+    }
+
     std::string Description() const
     {
         return "has any " + m_TypeName;
@@ -53,6 +63,16 @@ struct FirstIs
     bool Evaluate(const std::vector<Element *> & ents) const
     {
         return ents.size() >= 1 && (dynamic_cast<T *>(ents.front()) != nullptr);
+    }
+
+    bool Explain(const std::vector<Element *> & ents, std::string & reason) const
+    {
+        if (!Evaluate(ents))
+        {
+            reason = "first entity is not a " + m_TypeName;
+            return false;
+        }
+        return true;
     }
 
     std::string Description() const
@@ -87,5 +107,10 @@ int main(int argc, char ** argv)
 
     auto ex3 = X(AnyOf<A>("A")) || ex2;
     std::cout << ex3.Description() + ": " << ex3.Evaluate(ents) << std::endl;
+
+    std::string reason;
+    ex2.Explain(ents, reason);
+    std::cout << ex2.Description() + ": " << reason << std::endl;
+
     return 0;
 }

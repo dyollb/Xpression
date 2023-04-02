@@ -1,8 +1,3 @@
-/// \file Expression.h
-///
-/// \author Bryn Lloyd
-/// \copyright 2023
-
 #pragma once
 
 #include <memory>
@@ -29,6 +24,8 @@ class Expression
 
     bool Evaluate(const std::vector<Element *> & ents) const { return m_Pimpl->Evaluate(ents); }
 
+    bool Explain(const std::vector<Element *> & ents, std::string& reason) const { return m_Pimpl->Explain(ents, reason); }
+
     std::string Description() const { return m_Pimpl->Description(); }
 
     Expression operator&&(const Expression & other) const;
@@ -40,6 +37,7 @@ class Expression
     {
         virtual ~ExpressionConcept() = default;
         virtual bool Evaluate(const std::vector<Element *> &) const = 0;
+        virtual bool Explain(const std::vector<Element *> &, std::string&) const = 0;
         virtual std::string Description() const = 0;
         virtual std::unique_ptr<ExpressionConcept> Clone() const = 0;
     };
@@ -51,20 +49,10 @@ class Expression
             : object{std::forward<T>(value)}
         {}
 
-        bool Evaluate(const std::vector<Element *> & ents) const override
-        {
-            return object.Evaluate(ents);
-        }
-
-        std::string Description() const override
-        {
-            return object.Description();
-        }
-
-        std::unique_ptr<ExpressionConcept> Clone() const override
-        {
-            return std::make_unique<ExpressionModel>(*this);
-        }
+        bool Evaluate(const std::vector<Element *> & ents) const override { return object.Evaluate(ents); }
+        bool Explain(const std::vector<Element *> & ents, std::string& reason) const override { return object.Explain(ents, reason); }
+        std::string Description() const override { return object.Description(); }
+        std::unique_ptr<ExpressionConcept> Clone() const override { return std::make_unique<ExpressionModel>(*this); }
 
         T object;
     };

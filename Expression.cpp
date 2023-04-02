@@ -14,6 +14,21 @@ struct And
         return lhs.Evaluate(ents) && rhs.Evaluate(ents);
     }
 
+    bool Explain(const std::vector<Element *> & ents, std::string& reason) const
+    {
+        if (!lhs.Evaluate(ents))
+        {
+            reason = lhs.Description() + " is false";
+            return false;
+        }
+        if (!rhs.Evaluate(ents))
+        {
+            reason = rhs.Description() + " is false";
+            return false;
+        }
+        return true;
+    }
+
     std::string Description() const
     {
         return lhs.Description() + " and " + rhs.Description();
@@ -35,6 +50,16 @@ struct Or
         return lhs.Evaluate(ents) || rhs.Evaluate(ents);
     }
 
+    bool Explain(const std::vector<Element *> & ents, std::string& reason) const
+    {
+        if (!Evaluate(ents))
+        {
+            reason = "both " + lhs.Description() + " and " + rhs.Description() + " is false";
+            return false;
+        }
+        return true;
+    }
+
     std::string Description() const
     {
         return lhs.Description() + " or " + rhs.Description();
@@ -53,6 +78,16 @@ struct Not
     bool Evaluate(const std::vector<Element *> & ents) const
     {
         return !expression.Evaluate(ents);
+    }
+
+    bool Explain(const std::vector<Element *> & ents, std::string& reason) const
+    {
+        if (!Evaluate(ents))
+        {
+            reason = expression.Description() + " is not false";
+            return false;
+        }
+        return true;
     }
 
     std::string Description() const { return "not " + expression.Description(); }
