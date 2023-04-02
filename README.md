@@ -5,4 +5,4 @@ The expression tree can evaluate itself, print a description of all the conditio
 
 The fundamental class `Expression` has overloaded logical operators `&&`, `||` and `!`, making the code  expressive and easy to read.
 
-The implementation with no virtual functions in the interface is inspired by a CppCon 2021 talk by Klaus Iglberger, "Breaking Dependencies: Type Erasure - A Design Analysis".
+The implementation with no virtual functions in the interface is inspired by a CppCon 2021 talk by Klaus Iglberger, ["Breaking Dependencies: Type Erasure - A Design Analysis"](https://youtu.be/4eeESJQk-mw).
